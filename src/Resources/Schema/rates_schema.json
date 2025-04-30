@@ -1,0 +1,33 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Exchange Rates API Response",
+    "type": "object",
+    "properties": {
+        "success": {
+            "type": "boolean"
+        },
+        "timestamp": {
+            "type": "integer"
+        },
+        "base": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+        },
+        "date": {
+            "type": "string",
+            "format": "date"
+        },
+        "rates": {
+            "type": "object",
+            "patternProperties": {
+                "^[A-Z]{3}$": {
+                    "type": "number"
+                }
+            },
+            "additionalProperties": true,
+            "minProperties": 1
+        }
+    },
+    "required": ["success", "timestamp", "base", "date", "rates"],
+    "additionalProperties": false
+}

@@ -2,13 +2,19 @@
 
 require __DIR__.'/vendor/autoload.php';
 
+use App\Commission\Calculator\BaseEuroCommission;
+use App\Commission\Calculator\EuropeCountryCommission;
+use App\Commission\Calculator\NonEuroCommission;
+use App\Commission\Calculator\NonEuropeCountryCommission;
 use App\CommissionHandler;
 use App\Exception\ExitCode;
-use App\Http\BinlistClient;
+use App\Http\ExchangeRateClient;
 use App\Http\FakeBinlistClient;
+use App\Http\FakeExchangeRateClient;
 use App\JsonStreamer;
 use App\Parser\ParserFactory;
 use App\Services\BinInfo\BinLookup;
+use App\Services\ExchangeRate\ExchangeRate;
 use App\Validator\ValidatorFactory;
 
 function getFileName($argv): mixed
@@ -27,12 +33,7 @@ function getFileName($argv): mixed
 
 try {
     $streamer = new JsonStreamer();
-    $handler = new CommissionHandler(
-        new BinLookup(
-            new FakeBinlistClient(),
-            ValidatorFactory::getBinInfoValidator(),
-        )
-    );
+    $handler = new CommissionHandler();
     $streamer->setParser(
         ParserFactory::getParser(
             getFileName($argv)
@@ -41,6 +42,21 @@ try {
     $handler->setValidator(
         ValidatorFactory::getCommissionLineValidator(),
     );
+
+    $handler->addCommissionCalculator(new BaseEuroCommission());
+    $handler->addCommissionCalculator(new NonEuroCommission(
+        new ExchangeRate(
+            new FakeExchangeRateClient(apiKey: getenv('EXCHANGE_RATE_API_KEY')),
+            ValidatorFactory::getExchangeRateValidator(),
+        )
+    ));
+    $binLookup = new BinLookup(
+        new FakeBinlistClient(),
+        ValidatorFactory::getBinInfoValidator(),
+    );
+    $handler->addCommissionCalculator(new EuropeCountryCommission($binLookup));
+    $handler->addCommissionCalculator(new NonEuropeCountryCommission($binLookup));
+
     $results = $handler->processCommissions($streamer);
 } catch (Throwable $throwable) {
     echo $throwable->getMessage();

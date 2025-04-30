@@ -15,6 +15,19 @@ class BinLookup implements BinLookupInterface
     ) {
     }
 
+    public function getCountryCodeByBin(string $bin): string
+    {
+        return $this->getBinlistInfo($bin)->country->alpha2;
+    }
+
+    /**
+     * @return object{
+     *     country: object{
+     *         alpha2: string
+     *     },
+     *     ...
+     * }
+     */
     private function getBinlistInfo(string $bin): object
     {
         if (isset($this->cache[$bin])) {
@@ -26,10 +39,5 @@ class BinLookup implements BinLookupInterface
         $this->cache[$bin] = $response;
 
         return $response;
-    }
-
-    public function getCountryCodeByBin(string $bin): string
-    {
-        return $this->getBinlistInfo($bin)->country->alpha2;
     }
 }

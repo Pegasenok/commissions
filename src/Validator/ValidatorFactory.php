@@ -21,4 +21,13 @@ class ValidatorFactory
             getcwd().'/src/Resources/Schema/bin_schema.json'
         );
     }
+
+    public static function getExchangeRateValidator(): ValidatorInterface
+    {
+        return new SchemaValidator(
+            new Validator,
+            getcwd().'/src/Resources/Schema/rates_schema.json'
+        );
+    }
+
 }

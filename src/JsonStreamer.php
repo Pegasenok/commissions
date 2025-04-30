@@ -14,7 +14,11 @@ class JsonStreamer
     }
 
     /**
-     * @return \Generator<array>
+     * @return \Generator<array{
+     *     bin: string,
+     *     amount: string,
+     *     currency: string
+     * }>
      */
     public function iterate(): \Generator
     {
