@@ -3,13 +3,17 @@
 namespace App;
 
 use App\Exception\ValidationException;
+use App\Services\BinInfo\BinLookupInterface;
 use App\Validator\ValidatorInterface;
 
 class CommissionHandler
 {
     use ErrorHolderTrait;
 
-    private ValidatorInterface $validator;
+    public function __construct(
+        private BinLookupInterface $binInfo,
+    ) {
+    }
 
     public function processCommissions(JsonStreamer $streamer): array
     {
@@ -20,10 +24,11 @@ class CommissionHandler
             $i++;
             try {
                 $this->validate($line);
+                $code = $this->binInfo->getCountryCodeByBin($line['bin']);
+                $results[] = $code;
             } catch (ValidationException $e) {
                 $this->addError(sprintf("line:%d %s", $i, $e->getMessage()));
-            }
-            $results[] = 0;
+            };
         }
 
         return $results;

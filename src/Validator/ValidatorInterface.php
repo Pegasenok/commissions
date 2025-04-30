@@ -9,5 +9,5 @@ interface ValidatorInterface
     /**
      * @throws ValidationException
      */
-    public function validate(array $line);
+    public function validate(mixed $line);
 }

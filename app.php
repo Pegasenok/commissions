@@ -4,9 +4,12 @@ require __DIR__.'/vendor/autoload.php';
 
 use App\CommissionHandler;
 use App\Exception\ExitCode;
+use App\Http\BinlistClient;
+use App\Http\FakeBinlistClient;
 use App\JsonStreamer;
 use App\Parser\ParserFactory;
-use App\Validator\CommissionValidatorFactory;
+use App\Services\BinInfo\BinLookup;
+use App\Validator\ValidatorFactory;
 
 function getFileName($argv): mixed
 {
@@ -24,14 +27,19 @@ function getFileName($argv): mixed
 
 try {
     $streamer = new JsonStreamer();
-    $handler = new CommissionHandler();
+    $handler = new CommissionHandler(
+        new BinLookup(
+            new FakeBinlistClient(),
+            ValidatorFactory::getBinInfoValidator(),
+        )
+    );
     $streamer->setParser(
         ParserFactory::getParser(
             getFileName($argv)
         )
     );
     $handler->setValidator(
-        CommissionValidatorFactory::getValidator()
+        ValidatorFactory::getCommissionLineValidator(),
     );
     $results = $handler->processCommissions($streamer);
 } catch (Throwable $throwable) {

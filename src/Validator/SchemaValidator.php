@@ -5,7 +5,7 @@ namespace App\Validator;
 use App\Exception\ValidationException;
 use JsonSchema\Validator;
 
-class CommissionLineValidator implements ValidatorInterface
+class SchemaValidator implements ValidatorInterface
 {
     private object $schema;
 
@@ -19,7 +19,7 @@ class CommissionLineValidator implements ValidatorInterface
         }
     }
 
-    public function validate(array $line)
+    public function validate(mixed $line)
     {
         $this->validator->validate($line, $this->getSchema());
 
