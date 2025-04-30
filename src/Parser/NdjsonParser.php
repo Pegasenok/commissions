@@ -4,9 +4,11 @@ namespace App\Parser;
 
 use Sunaoka\Ndjson\NDJSON;
 
-class NdjsonParserWrapper implements ParserInterface
+class NdjsonParser implements ParserInterface
 {
-    /** @var object|NDJSON */
+    /**
+     * @var object|NDJSON
+     */
     private object $parser;
 
     /**

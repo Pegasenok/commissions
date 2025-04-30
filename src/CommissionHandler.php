@@ -7,18 +7,21 @@ use App\Validator\ValidatorInterface;
 
 class CommissionHandler
 {
+    use ErrorHolderTrait;
+
     private ValidatorInterface $validator;
-    private $errors = [];
 
     public function processCommissions(JsonStreamer $streamer): array
     {
         $results = [];
+        $i = 0;
 
         foreach ($streamer->iterate() as $line) {
+            $i++;
             try {
                 $this->validate($line);
             } catch (ValidationException $e) {
-                $this->addError($e->getMessage());
+                $this->addError(sprintf("line:%d %s", $i, $e->getMessage()));
             }
             $results[] = 0;
         }
@@ -26,7 +29,10 @@ class CommissionHandler
         return $results;
     }
 
-    private function validate(array $line)
+    /**
+     * @throws ValidationException
+     */
+    protected function validate(array $line)
     {
         $this->validator->validate($line);
     }
@@ -34,15 +40,5 @@ class CommissionHandler
     public function setValidator(ValidatorInterface $validator)
     {
         $this->validator = $validator;
-    }
-
-    public function addError($error)
-    {
-        $this->errors[] = $error;
-    }
-
-    public function getErrors(): array
-    {
-        return $this->errors;
     }
 }
