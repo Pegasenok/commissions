@@ -4,12 +4,15 @@ namespace App\Http;
 
 class CachedBinlistClient extends BinlistClient
 {
-    private const CACHE_DIR = 'var/binlist_cache';
-    private const CACHE_TTL = 60*60*24; // 24 hours in seconds
+    private const CACHE_TTL = 60 * 60 * 24; // 24 hours in seconds
+    private $cacheDir = 'var/binlist_cache';
 
     public function __construct(array $config = [])
     {
         parent::__construct($config);
+        if (isset($config['cacheDir'])) {
+            $this->cacheDir = $config['cacheDir'];
+        }
         $this->ensureCacheDirExists();
     }
 
@@ -37,7 +40,7 @@ class CachedBinlistClient extends BinlistClient
 
     private function getCacheFilePath(string $bin): string
     {
-        return self::CACHE_DIR . '/' . $bin . '.json';
+        return $this->cacheDir.'/'.$bin.'.json';
     }
 
     private function isCacheValid(string $cacheFile): bool
@@ -71,8 +74,8 @@ class CachedBinlistClient extends BinlistClient
 
     private function ensureCacheDirExists(): void
     {
-        if (!is_dir(self::CACHE_DIR)) {
-            mkdir(self::CACHE_DIR, 0755, true);
+        if (!is_dir($this->cacheDir)) {
+            mkdir($this->cacheDir, 0755, true);
         }
     }
 }
