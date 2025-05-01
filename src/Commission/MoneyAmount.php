@@ -2,8 +2,12 @@
 
 namespace App\Commission;
 
+use App\Commission\Calculator\UtilsCalculatorTrait;
+
 class MoneyAmount
 {
+    use UtilsCalculatorTrait;
+
     /** @var array<callable (string $originalAmount): string> */
     private $modifiers = [];
 
@@ -38,6 +42,6 @@ class MoneyAmount
 
     public function getDelta(): string
     {
-        return number_format((float) $this->getOriginalAmount() - (float) $this->getAmount(), 2);
+        return $this->formatToString((float) $this->getOriginalAmount() - (float) $this->getAmount());
     }
 }
