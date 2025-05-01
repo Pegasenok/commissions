@@ -2,6 +2,7 @@
 
 namespace App\Parser;
 
+use RuntimeException;
 use Sunaoka\Ndjson\NDJSON;
 
 class NdjsonParser implements ParserInterface
@@ -25,6 +26,11 @@ class NdjsonParser implements ParserInterface
 
     public function readline(): array|null
     {
-        return $this->parser->readline();
+        try {
+            return $this->parser->readline();
+        } catch (RuntimeException $exception) {
+            // when ndjson file does not have empty line at the end
+            return null;
+        }
     }
 }

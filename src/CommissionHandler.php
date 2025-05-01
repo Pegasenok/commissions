@@ -6,12 +6,8 @@ use App\Commission\Calculator\CommissionCalculatorInterface;
 use App\Commission\MoneyAmount;
 use App\Exception\BrokenInputException;
 use App\Exception\CommissionFailureInterface;
-use App\Exception\NoBinInfoException;
-use App\Exception\NoExchangeRateException;
 use App\Exception\ValidationException;
-use App\Services\BinInfo\BinLookupInterface;
 use App\Validator\ValidatorInterface;
-use GuzzleHttp\Exception\GuzzleException;
 
 class CommissionHandler
 {
@@ -21,9 +17,10 @@ class CommissionHandler
      * @var CommissionCalculatorInterface[]
      */
     private array $commissionCalculators = [];
+    private ValidatorInterface $validator;
 
-    public function __construct(
-    ) {
+    public function __construct()
+    {
     }
 
     public function processCommissions(JsonStreamer $streamer): array
@@ -39,7 +36,11 @@ class CommissionHandler
                 foreach ($this->commissionCalculators as $commissionCalculator) {
                     if ($commissionCalculator->isSuitable($amount, $line['bin'], $line['currency'])) {
                         $amount->addModifier(
-                            $commissionCalculator->getMoneyAmountAdjustCallback($amount, $line['bin'], $line['currency'])
+                            $commissionCalculator->getMoneyAmountAdjustCallback(
+                                $amount,
+                                $line['bin'],
+                                $line['currency']
+                            )
                         );
                     }
                 }
