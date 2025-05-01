@@ -34,6 +34,8 @@ class ExchangeRateClient extends Client
      *         ...: float
      *     },
      * }
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \TypeError
      */
     public function getRates(): object
     {

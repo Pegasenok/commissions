@@ -6,6 +6,8 @@ use App\Exception\NoExchangeRateException;
 use App\Exception\ValidationException;
 use App\Http\ExchangeRateClient;
 use App\Validator\ValidatorInterface;
+use GuzzleHttp\Exception\GuzzleException;
+use TypeError;
 
 class ExchangeRate
 {
@@ -22,7 +24,11 @@ class ExchangeRate
      */
     public function getRate(string $currency)
     {
-        $this->initRates();
+        try {
+            $this->initRates();
+        } catch (GuzzleException|TypeError) {
+            throw new NoExchangeRateException("Exchange rate service unavailable.");
+        }
         if (!isset($this->ratesResponse->rates->{$currency})) {
             throw new NoExchangeRateException("Exchange rate for {$currency} not found");
         }
@@ -30,6 +36,11 @@ class ExchangeRate
         return $this->ratesResponse->rates->{$currency};
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws TypeError
+     * @throws NoExchangeRateException
+     */
     private function initRates(): void
     {
         if (empty($this->ratesResponse)) {

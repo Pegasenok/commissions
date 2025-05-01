@@ -7,6 +7,9 @@ use App\Exception\ValidationException;
 use App\Http\ExchangeRateClient;
 use App\Services\ExchangeRate\ExchangeRate;
 use App\Validator\ValidatorInterface;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -21,6 +24,20 @@ class ExchangeRateTest extends TestCase
         $this->mockClient = $this->createMock(ExchangeRateClient::class);
         $this->mockValidator = $this->createMock(ValidatorInterface::class);
         $this->exchangeRate = new ExchangeRate($this->mockClient, $this->mockValidator);
+    }
+
+    public function testGetRateThrowsExceptionOnJsonParseError(): void
+    {
+        // Configure the mock client to throw a JSON exception
+        $this->mockClient->expects($this->once())
+            ->method('getRates')
+            ->willThrowException(new \TypeError('Syntax error, malformed JSON'));
+
+        // Expect a NoExchangeRateException when JSON parsing fails
+        $this->expectException(NoExchangeRateException::class);
+        $this->expectExceptionMessage('Exchange rate service unavailable.');
+
+        $this->exchangeRate->getRate('USD');
     }
 
     public function testGetRateReturnsCorrectRate(): void
@@ -240,6 +257,29 @@ class ExchangeRateTest extends TestCase
         // Expect an exception when requesting any currency
         $this->expectException(NoExchangeRateException::class);
         $this->expectExceptionMessage('Exchange rate for USD not found');
+
+        $this->exchangeRate->getRate('USD');
+    }
+
+    public function testGetRateThrowsExceptionOnGuzzleTimeout(): void
+    {
+        // Create a mock request for the ConnectException
+        $request = new Request('GET', 'latest');
+
+        // Create a ConnectException that simulates a timeout
+        $timeoutException = new ConnectException(
+            'cURL error 28: Operation timed out after 5000 milliseconds with 0 bytes received',
+            $request
+        );
+
+        // Configure the mock client to throw the timeout exception
+        $this->mockClient->expects($this->once())
+            ->method('getRates')
+            ->willThrowException($timeoutException);
+
+        // Expect a NoExchangeRateException when a timeout occurs
+        $this->expectException(NoExchangeRateException::class);
+        $this->expectExceptionMessage('Exchange rate service unavailable.');
 
         $this->exchangeRate->getRate('USD');
     }
