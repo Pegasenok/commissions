@@ -1,7 +1,9 @@
 {
+    "name": "assessment/task-commissions",
+    "description": "Gets input file with new line separated jsons and calculates commission for each line.",
     "require-dev": {
-        "php": "^8.4",
-        "phpunit/phpunit": "^12.1"
+        "phpunit/phpunit": "^12.1",
+        "ext-mbstring": "*"
     },
     "autoload": {
         "psr-4": {
@@ -14,6 +16,7 @@
         }
     },
     "require": {
+        "php": "^8.4",
         "sunaoka/ndjson": "^1.1",
         "justinrainbow/json-schema": "^6.4",
         "guzzlehttp/guzzle": "^7.0"
