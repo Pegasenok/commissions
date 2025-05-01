@@ -13,13 +13,20 @@ class SchemaValidator implements ValidatorInterface
         private Validator $validator,
         private string $schemaPath
     ) {
-        $this->schema = json_decode(file_get_contents($this->schemaPath));
-        if (!$this->schema) {
+        if (!file_exists($this->schemaPath)) {
             throw new \Exception('Schema not found');
         }
+        $try = json_decode(file_get_contents($this->schemaPath));
+        if (!$try) {
+            throw new \Exception('Schema not found');
+        }
+        $this->schema = $try;
     }
 
-    public function validate(mixed $line)
+    /**
+     * @throws ValidationException
+     */
+    public function validate(mixed $line): void
     {
         $this->validator->validate($line, $this->getSchema());
 

@@ -63,10 +63,10 @@ class CommissionHandler
     /**
      * @throws BrokenInputException
      */
-    protected function validate(array $line)
+    protected function validate(mixed $line)
     {
         try {
-            $this->validator->validate($line);
+            $this->validator->validate((object) $line);
         } catch (ValidationException $exception) {
             throw new BrokenInputException($exception->getMessage(), previous: $exception);
         }

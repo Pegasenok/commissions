@@ -43,7 +43,7 @@ class CommissionHandlerTest extends TestCase
             ->method('validate')
             ->willReturnCallback(function ($line) {
                 // Just validate that the required fields exist
-                if (!isset($line['bin']) || !isset($line['amount']) || !isset($line['currency'])) {
+                if (!isset($line->bin) || !isset($line->amount) || !isset($line->currency)) {
                     throw new ValidationException('Missing required fields');
                 }
             });
@@ -90,7 +90,7 @@ class CommissionHandlerTest extends TestCase
         $this->mockValidator->expects($this->exactly(2))
             ->method('validate')
             ->willReturnCallback(function ($line) {
-                if ($line['amount'] < 0) {
+                if ($line->amount < 0) {
                     throw new ValidationException('Amount cannot be negative');
                 }
             });
@@ -141,7 +141,7 @@ class CommissionHandlerTest extends TestCase
         $this->mockValidator->expects($this->exactly(2))
             ->method('validate')
             ->willReturnCallback(function ($line) {
-                if (!isset($line['bin']) || !isset($line['amount']) || !isset($line['currency'])) {
+                if (!isset($line->bin) || !isset($line->amount) || !isset($line->currency)) {
                     throw new ValidationException('Missing required fields');
                 }
             });
