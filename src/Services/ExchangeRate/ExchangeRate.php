@@ -9,7 +9,7 @@ use App\Validator\ValidatorInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use TypeError;
 
-class ExchangeRate
+class ExchangeRate implements ExchangeRateInterface
 {
     private $ratesResponse = [];
 
@@ -22,7 +22,7 @@ class ExchangeRate
     /**
      * @throws NoExchangeRateException
      */
-    public function getRate(string $currency)
+    public function getRate(string $currency): float
     {
         try {
             $this->initRates();
@@ -33,7 +33,7 @@ class ExchangeRate
             throw new NoExchangeRateException("Exchange rate for {$currency} not found");
         }
 
-        return $this->ratesResponse->rates->{$currency};
+        return (float) $this->ratesResponse->rates->{$currency};
     }
 
     /**

@@ -197,7 +197,7 @@ class ExchangeRateTest extends TestCase
 
         // Assert that the correct rate is returned
         $this->assertEquals(130, $rate);
-        $this->assertIsInt($rate);
+        $this->assertIsFloat($rate);
     }
 
     public function testGetRateHandlesStringRates(): void
@@ -229,8 +229,8 @@ class ExchangeRateTest extends TestCase
         $rate = $this->exchangeRate->getRate('USD');
 
         // Assert that the correct rate is returned
-        $this->assertEquals('1.18', $rate);
-        $this->assertIsString($rate);
+        $this->assertEquals(1.18, $rate);
+        $this->assertIsFloat($rate);
     }
 
     public function testGetRateWithEmptyRatesObject(): void

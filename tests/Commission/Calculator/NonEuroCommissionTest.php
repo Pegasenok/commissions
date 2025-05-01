@@ -6,6 +6,7 @@ use App\Commission\Calculator\NonEuroCommission;
 use App\Commission\MoneyAmount;
 use App\Exception\NoExchangeRateException;
 use App\Services\ExchangeRate\ExchangeRate;
+use App\Services\ExchangeRate\ExchangeRateInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -16,7 +17,7 @@ class NonEuroCommissionTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockExchangeRate = $this->createMock(ExchangeRate::class);
+        $this->mockExchangeRate = $this->createMock(ExchangeRateInterface::class);
         $this->calculator = new NonEuroCommission($this->mockExchangeRate);
     }
 

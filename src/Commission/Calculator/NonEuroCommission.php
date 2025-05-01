@@ -3,15 +3,15 @@
 namespace App\Commission\Calculator;
 
 use App\Commission\MoneyAmount;
-use App\Exception\NoExchangeRateException;
-use App\Services\ExchangeRate\ExchangeRate;
+use App\Services\ExchangeRate\ExchangeRateInterface;
 
 class NonEuroCommission implements CommissionCalculatorInterface
 {
     use UtilsCalculatorTrait;
 
-    public function __construct(private ExchangeRate $exchangeRate)
-    {
+    public function __construct(
+        private ExchangeRateInterface $exchangeRate,
+    ) {
     }
 
     public function isSuitable(MoneyAmount $moneyAmount, mixed $bin, mixed $currency): bool
