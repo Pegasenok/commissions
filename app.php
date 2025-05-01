@@ -48,7 +48,7 @@ try {
     $handler->addCommissionCalculator(new BaseEuroCommission());
     $handler->addCommissionCalculator(new NonEuroCommission(
         new ExchangeRate(
-            new FakeExchangeRateClient(apiKey: getenv('EXCHANGE_RATE_API_KEY')),
+            new ExchangeRateClient(apiKey: getenv('EXCHANGE_RATE_API_KEY')),
             ValidatorFactory::getExchangeRateValidator(),
         )
     ));
