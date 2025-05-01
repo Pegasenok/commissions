@@ -2,7 +2,7 @@
 
 namespace App\Exception;
 
-class ValidationException extends \Exception
+class ValidationException extends \Exception implements CommissionFailureInterface
 {
 
 }

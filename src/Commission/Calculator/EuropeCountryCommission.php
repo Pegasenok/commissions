@@ -7,6 +7,8 @@ use App\Services\BinInfo\BinLookupInterface;
 
 class EuropeCountryCommission implements CommissionCalculatorInterface
 {
+    use UtilsCalculatorTrait;
+
     private const EU_COMMISSION = 0.01;
 
     public function __construct(
@@ -16,16 +18,17 @@ class EuropeCountryCommission implements CommissionCalculatorInterface
 
     public function isSuitable(MoneyAmount $moneyAmount, mixed $bin, mixed $currency): bool
     {
-        $isEu = EuropeCountryCommission::isEu(
+        return EuropeCountryCommission::isEu(
             $this->binInfo->getCountryCodeByBin($bin)
         );
-        return $isEu;
     }
 
     public function getMoneyAmountAdjustCallback(MoneyAmount $moneyAmount, mixed $bin, mixed $currency): callable
     {
-        return function (string $amount) use ($moneyAmount, $currency) {
-            return number_format((float) $amount * EuropeCountryCommission::EU_COMMISSION, 4);
+        return function (string $amount) use ($moneyAmount, $currency): string {
+            return $this->formatToString(
+                $this->formatToFloat($amount) * EuropeCountryCommission::EU_COMMISSION
+            );
         };
     }
 

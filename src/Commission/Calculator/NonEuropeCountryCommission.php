@@ -6,6 +6,8 @@ use App\Commission\MoneyAmount;
 
 class NonEuropeCountryCommission extends EuropeCountryCommission implements CommissionCalculatorInterface
 {
+    use UtilsCalculatorTrait;
+
     private const NON_EU_COMMISSION = 0.02;
 
     public function isSuitable(MoneyAmount $moneyAmount, mixed $bin, mixed $currency): bool
@@ -17,8 +19,10 @@ class NonEuropeCountryCommission extends EuropeCountryCommission implements Comm
 
     public function getMoneyAmountAdjustCallback(MoneyAmount $moneyAmount, mixed $bin, mixed $currency): callable
     {
-        return function (string $amount) use ($moneyAmount, $currency) {
-            return number_format((float) $amount * self::NON_EU_COMMISSION, 4);
+        return function (string $amount) use ($moneyAmount, $currency): string {
+            return $this->formatToString(
+                $this->formatToFloat($amount) * self::NON_EU_COMMISSION
+            );
         };
     }
 }

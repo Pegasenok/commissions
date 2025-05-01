@@ -17,6 +17,9 @@ class ExchangeRate
     ) {
     }
 
+    /**
+     * @throws NoExchangeRateException
+     */
     public function getRate(string $currency)
     {
         $this->initRates();

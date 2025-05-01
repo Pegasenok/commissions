@@ -8,6 +8,8 @@ use App\Commission\Calculator\NonEuroCommission;
 use App\Commission\Calculator\NonEuropeCountryCommission;
 use App\CommissionHandler;
 use App\Exception\ExitCode;
+use App\Http\BinlistClient;
+use App\Http\CachedBinlistClient;
 use App\Http\ExchangeRateClient;
 use App\Http\FakeBinlistClient;
 use App\Http\FakeExchangeRateClient;
@@ -51,7 +53,7 @@ try {
         )
     ));
     $binLookup = new BinLookup(
-        new FakeBinlistClient(),
+        new CachedBinlistClient(),
         ValidatorFactory::getBinInfoValidator(),
     );
     $handler->addCommissionCalculator(new EuropeCountryCommission($binLookup));
@@ -64,7 +66,7 @@ try {
 }
 
 foreach ($results as $result) {
-    echo $result.PHP_EOL;
+    echo number_format((float) $result, 2).PHP_EOL;
 }
 
 foreach ($handler->getErrors() as $line) {

@@ -6,6 +6,8 @@ use App\Commission\MoneyAmount;
 
 class BaseEuroCommission implements CommissionCalculatorInterface
 {
+    use UtilsCalculatorTrait;
+
     const string EUR = 'EUR';
 
     public function isSuitable(MoneyAmount $moneyAmount, mixed $bin, mixed $currency): bool
@@ -18,7 +20,7 @@ class BaseEuroCommission implements CommissionCalculatorInterface
 
     public function getMoneyAmountAdjustCallback(MoneyAmount $moneyAmount, mixed $bin, mixed $currency): callable
     {
-        return function(string $amount) use ($moneyAmount) {
+        return function(string $amount) use ($moneyAmount): string {
             return $moneyAmount->getOriginalAmount();
         };
     }

@@ -4,6 +4,13 @@ namespace App\Http;
 
 class FakeExchangeRateClient extends ExchangeRateClient
 {
+    public function __construct(
+        array $config = [],
+        ?string $apiKey = null
+    ) {
+        // skip parent to avoid missing apiKey exception
+    }
+
     public function getRates(): object
     {
         return json_decode(

@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class BinlistClient extends Client
 {
@@ -22,6 +23,9 @@ class BinlistClient extends Client
         parent::__construct(array_merge($defaultConfig, $config));
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function lookupBin(string $bin): object
     {
         $response = $this->get($bin);

@@ -4,9 +4,14 @@ namespace App;
 
 use App\Commission\Calculator\CommissionCalculatorInterface;
 use App\Commission\MoneyAmount;
+use App\Exception\BrokenInputException;
+use App\Exception\CommissionFailureInterface;
+use App\Exception\NoBinInfoException;
+use App\Exception\NoExchangeRateException;
 use App\Exception\ValidationException;
 use App\Services\BinInfo\BinLookupInterface;
 use App\Validator\ValidatorInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 class CommissionHandler
 {
@@ -39,9 +44,11 @@ class CommissionHandler
                     }
                 }
                 $results[] = $amount->getAmount();
-            } catch (ValidationException $e) {
-                $this->addError(sprintf("line:%d %s", $i, $e->getMessage()));
-            };
+            } catch (BrokenInputException $e) {
+                $this->addError(sprintf("broken_line:\t%d\t%s", $i, $e->getMessage()));
+            } catch (ValidationException|CommissionFailureInterface $e) {
+                $this->addError(sprintf("unprocessed_line:\t%d\t%s", $i, $e->getMessage()));
+            }
         }
 
         return $results;
@@ -53,11 +60,15 @@ class CommissionHandler
     }
 
     /**
-     * @throws ValidationException
+     * @throws BrokenInputException
      */
     protected function validate(array $line)
     {
-        $this->validator->validate($line);
+        try {
+            $this->validator->validate($line);
+        } catch (ValidationException $exception) {
+            throw new BrokenInputException($exception->getMessage(), previous: $exception);
+        }
     }
 
     public function setValidator(ValidatorInterface $validator)

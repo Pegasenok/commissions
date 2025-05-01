@@ -2,8 +2,11 @@
 
 namespace App\Services\BinInfo;
 
+use App\Exception\NoBinInfoException;
+use App\Exception\ValidationException;
 use App\Http\BinlistClient;
 use App\Validator\ValidatorInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 class BinLookup implements BinLookupInterface
 {
@@ -17,7 +20,11 @@ class BinLookup implements BinLookupInterface
 
     public function getCountryCodeByBin(string $bin): string
     {
-        return $this->getBinlistInfo($bin)->country->alpha2;
+        try {
+            return $this->getBinlistInfo($bin)->country->alpha2;
+        } catch (GuzzleException $exception) {
+            throw new NoBinInfoException($exception->getMessage());
+        }
     }
 
     /**
@@ -27,6 +34,7 @@ class BinLookup implements BinLookupInterface
      *     },
      *     ...
      * }
+     * @throws GuzzleException|ValidationException
      */
     private function getBinlistInfo(string $bin): object
     {

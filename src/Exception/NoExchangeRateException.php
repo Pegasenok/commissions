@@ -2,7 +2,7 @@
 
 namespace App\Exception;
 
-class NoExchangeRateException extends \Exception
+class NoExchangeRateException extends \Exception implements CommissionFailureInterface
 {
 
 }

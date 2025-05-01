@@ -1,0 +1,18 @@
+{
+    "number": {},
+    "scheme": "visa",
+    "type": "credit",
+    "brand": "Visa Classic",
+    "country": {
+        "numeric": "392",
+        "alpha2": "US",
+        "name": "USA",
+        "emoji": "🇯🇵",
+        "currency": "USD",
+        "latitude": 36,
+        "longitude": 138
+    },
+    "bank": {
+        "name": "VERMONT NATIONAL BANK"
+    }
+}
