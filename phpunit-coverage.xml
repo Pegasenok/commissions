@@ -18,6 +18,11 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <coverage includeUncoveredFiles="true" pathCoverage="false" ignoreDeprecatedCodeUnits="true">
+        <report>
+            <html outputDirectory=".phpunit.coverage" lowUpperBound="5" highLowerBound="25"/>
+        </report>
+    </coverage>
     <source>
         <include>
             <directory>src</directory>

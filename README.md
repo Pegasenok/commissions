@@ -1,28 +1,31 @@
 ## Run program
+### Locally
 ```bash
 composer install
 php app.php example/input.txt
 ```
+```bash
+./vendor/bin/phpunit tests
+```
+```bash
+export XDEBUG_MODE=coverage
+./vendor/bin/phpunit --configuration phpunit-coverage.xml
+```
 
+### Docker path
 ```bash
 docker build -t task-commissions .
-```
-
-```bash
-docker run -it --rm \
-  -v $(pwd):/app \
-  -v composer-cache:/root/.composer/cache \
-  task-commissions composer install
-```
-```bash
-docker run -it --rm \
-  -v $(pwd):/app \
-  -v composer-cache:/root/.composer/cache \
-  task-commissions php app.php example/input.txt
 ```
 ```bash
 docker run -it --rm \
   task-commissions vendor/bin/phpunit tests
+```
+```bash
+docker run -it --rm \
+  -v $(pwd)/app.php:/app/app.php \
+  -v $(pwd)/src:/app/src \
+  -v $(pwd)/example:/app/example \
+  task-commissions php app.php example/input.txt
 ```
 
 ## Issues found
