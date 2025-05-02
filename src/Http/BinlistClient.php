@@ -30,6 +30,6 @@ class BinlistClient extends Client
     {
         $response = $this->get($bin);
 
-        return json_decode($response->getBody()->getContents(), true);
+        return json_decode($response->getBody()->getContents(), false);
     }
 }
